@@ -1,5 +1,7 @@
 package com.example.naverrestaurant.naver;
 
+import com.example.naverrestaurant.naver.dto.SearchImageReq;
+import com.example.naverrestaurant.naver.dto.SearchImageRes;
 import com.example.naverrestaurant.naver.dto.SearchLocalReq;
 import com.example.naverrestaurant.naver.dto.SearchLocalRes;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,6 +56,36 @@ public class NaverClient {
                 httpEntity,
                 responseType
         );
+        return responseEntity.getBody();
+    }
+
+    // 이미지를 검색하는 메소드
+    public SearchImageRes searchImage(SearchImageReq searchImageReq){
+        // << 요청 보내는 방법 >>
+        // 1. 주소(uri) 만들기
+        var uri = UriComponentsBuilder.fromUriString(naverImageSearchUrl)
+                .queryParams(searchImageReq.toMultiValueMap())
+                .build()
+                .encode()
+                .toUri();
+
+        // 2. 헤더 세팅하기
+        var headers = new HttpHeaders();
+        headers.set("X-Naver-Client-Id",naverClientId);
+        headers.set("X-Naver-Client-Secret",naverClientSecret);
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // 3. 요청해주기
+        var httpEntity = new HttpEntity<>(headers); // 헤더를 entity에 담아주기(requestType을 정의해주기)
+        var responseType = new ParameterizedTypeReference<SearchImageRes>(){};  // responseType을 정의해주기
+
+        var responseEntity = new RestTemplate().exchange(
+                uri,
+                HttpMethod.GET,
+                httpEntity,
+                responseType
+        );
+
         return responseEntity.getBody();
     }
 }
