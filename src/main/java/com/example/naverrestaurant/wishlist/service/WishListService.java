@@ -10,6 +10,9 @@ import com.example.naverrestaurant.wishlist.repository.WishListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class WishListService {
@@ -82,5 +85,12 @@ public class WishListService {
         dto.setVisitCount(wishListEntity.getVisitCount());
         dto.setLastVisitDate(wishListEntity.getLastVisitDate());
         return dto;
+    }
+
+    public List<WishListDto> findAll() {
+        return wishListRepository.listAll()
+                .stream()
+                .map(it -> entityToDto(it))
+                .collect(Collectors.toList());
     }
 }
