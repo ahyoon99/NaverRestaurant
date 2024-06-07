@@ -93,4 +93,8 @@ public class WishListService {
                 .map(it -> entityToDto(it))
                 .collect(Collectors.toList());
     }
+
+    public void delete(int index) {
+        wishListRepository.deleteById(index);
+    }
 }
