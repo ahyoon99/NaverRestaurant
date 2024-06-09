@@ -47,4 +47,18 @@ public class WishListServiceTest {
 
         Assertions.assertEquals(wishList.size(), 3);
     }
+
+    @Test
+    public void deleteTest(){
+        for(int i=1;i<=3;i++){
+            var wishListDto = new WishListDto();
+            wishListDto.setTitle("마라탕"+i);
+            wishListDto.setCategory("중식");
+            var saveEntity = wishListService.add(wishListDto);
+        }
+        wishListService.delete(1);
+        List<WishListDto> wishList = wishListService.findAll();
+
+        Assertions.assertEquals(wishList.size(), 2);
+    }
 }
