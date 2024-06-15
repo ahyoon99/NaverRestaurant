@@ -97,4 +97,13 @@ public class WishListService {
     public void delete(int index) {
         wishListRepository.deleteById(index);
     }
+
+    public void addVisit(int index) {
+        var restaurant = wishListRepository.findById(index);
+        if (restaurant.isPresent()){
+            var restaurnatEntity = restaurant.get();
+            restaurnatEntity.setVisit(true);
+            restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
+        }
+    }
 }
