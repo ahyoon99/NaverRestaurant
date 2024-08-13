@@ -1,6 +1,5 @@
 package com.example.naverrestaurant.wishlist.service;
 
-import com.example.naverrestaurant.db.MemoryDbEntity;
 import com.example.naverrestaurant.naver.NaverClient;
 import com.example.naverrestaurant.naver.dto.SearchImageReq;
 import com.example.naverrestaurant.naver.dto.SearchLocalReq;
