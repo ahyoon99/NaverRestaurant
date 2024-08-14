@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -95,5 +96,13 @@ public class WishListService {
 
     public void delete(int index) {
         wishListRepository.deleteById(index);
+    }
+
+    public WishListDto findById(int index) {
+        Optional<WishListEntity> wishListEntity = wishListRepository.findById(index);
+        if(!wishListEntity.isPresent()){    // wishListEntity에 값이 없으면 Exception 처리하기
+            throw new IllegalArgumentException();
+        }
+        return entityToDto(wishListEntity.get());   // wishListEntity에 값이 있으면 wishListDto로 변환하여 리턴하기
     }
 }
