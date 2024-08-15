@@ -33,7 +33,24 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public T save(T entity) {
-        return null;
+        String saveQuery = "insert into " +
+                "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate) " +
+                "values (?,?,?,?,?,?,?,?,?)";
+        WishListEntity wishListEntity = (WishListEntity) entity;
+
+        Object []saveParams = new Object[] {wishListEntity.getTitle(),
+                wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
+                wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
+                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate() };
+
+        jdbcTemplate.update(saveQuery, saveParams);
+
+        String lastInsertIndexQuery = "select max(index) from restaurant";
+        int listInsertIndex = jdbcTemplate.queryForObject(lastInsertIndexQuery, int.class);
+
+        String lastInsertEntityQuery = "select * from restaurant where index=?";
+        WishListEntity result = jdbcTemplate.queryForObject(lastInsertEntityQuery, wishListEntityRowMapper(), listInsertIndex);
+        return (T) result;
     }
 
     @Override
