@@ -75,8 +75,9 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
             wishListEntity.setImageLink(rs.getString("imageLink"));
             wishListEntity.setVisit(rs.getBoolean("isVisit"));
             wishListEntity.setVisitCount(rs.getInt("visitCount"));
-            wishListEntity.setLastVisitDate(rs.getTimestamp("lastVisitDate").toLocalDateTime());
-
+            if(rs.getTimestamp("lastVisitDate") != null){   // lastVisitDate가 null이 아닐 때만 set 해주기
+                wishListEntity.setLastVisitDate(rs.getTimestamp("lastVisitDate").toLocalDateTime());
+            }
             return wishListEntity;
         });
     }
