@@ -55,7 +55,10 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public void deleteById(int index) {
-
+        String deleteByIdQuery = "delete from restaurant where index=?";
+        int deleteByIdParam = index;
+        int result = this.jdbcTemplate.update(deleteByIdQuery, deleteByIdParam);
+        System.out.println("delete : "+result);
     }
 
     @Override
