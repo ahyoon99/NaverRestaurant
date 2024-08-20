@@ -16,6 +16,11 @@ public class ApiController {
 
     private final WishListService wishListService;
 
+    @GetMapping("/findById")
+    public WishListDto findById(@RequestParam int index){
+        return wishListService.findById(index);
+    }
+
     @GetMapping("/search")
     public WishListDto search(@RequestParam String query){
         return wishListService.search(query);

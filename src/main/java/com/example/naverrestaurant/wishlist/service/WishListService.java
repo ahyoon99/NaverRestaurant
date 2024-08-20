@@ -1,6 +1,5 @@
 package com.example.naverrestaurant.wishlist.service;
 
-import com.example.naverrestaurant.db.MemoryDbEntity;
 import com.example.naverrestaurant.naver.NaverClient;
 import com.example.naverrestaurant.naver.dto.SearchImageReq;
 import com.example.naverrestaurant.naver.dto.SearchLocalReq;
@@ -11,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -98,6 +98,14 @@ public class WishListService {
         wishListRepository.deleteById(index);
     }
 
+    public WishListDto findById(int index) {
+        Optional<WishListEntity> wishListEntity = wishListRepository.findById(index);
+        if(!wishListEntity.isPresent()){    // wishListEntity에 값이 없으면 Exception 처리하기
+            throw new IllegalArgumentException();
+        }
+        return entityToDto(wishListEntity.get());   // wishListEntity에 값이 있으면 wishListDto로 변환하여 리턴하기
+    }
+  
     public void addVisit(int index) {
         var restaurant = wishListRepository.findById(index);
         if (restaurant.isPresent()){
@@ -106,4 +114,5 @@ public class WishListService {
             restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
         }
     }
+  
 }
