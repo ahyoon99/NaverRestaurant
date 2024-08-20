@@ -105,4 +105,14 @@ public class WishListService {
         }
         return entityToDto(wishListEntity.get());   // wishListEntity에 값이 있으면 wishListDto로 변환하여 리턴하기
     }
+  
+    public void addVisit(int index) {
+        var restaurant = wishListRepository.findById(index);
+        if (restaurant.isPresent()){
+            var restaurnatEntity = restaurant.get();
+            restaurnatEntity.setVisit(true);
+            restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
+        }
+    }
+  
 }
