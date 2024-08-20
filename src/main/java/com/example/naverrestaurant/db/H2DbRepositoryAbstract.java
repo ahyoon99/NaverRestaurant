@@ -63,7 +63,9 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public List<T> listAll() {
-        return null;
+        String listAllQuery = "select * from restaurant";
+        List<WishListEntity> result = this.jdbcTemplate.query(listAllQuery, wishListEntityRowMapper());
+        return (List<T>) result;
     }
 
     private RowMapper<WishListEntity> wishListEntityRowMapper(){
