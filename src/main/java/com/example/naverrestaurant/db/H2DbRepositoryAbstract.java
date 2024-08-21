@@ -68,6 +68,14 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
         return (List<T>) result;
     }
 
+    @Override
+    public void updateById(int index, T entity) {
+        String updateByIdQuery = "update restaurant set isvisit=?, visitcount=? where index=?";
+
+        WishListEntity wishListEntity = (WishListEntity) entity;
+        jdbcTemplate.update(updateByIdQuery, wishListEntity.isVisit(), wishListEntity.getVisitCount(), index);
+    }
+
     private RowMapper<WishListEntity> wishListEntityRowMapper(){
         return ((rs, rowNum) -> {
             WishListEntity wishListEntity = new WishListEntity();

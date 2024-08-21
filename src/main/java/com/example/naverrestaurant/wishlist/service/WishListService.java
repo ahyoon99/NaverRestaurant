@@ -112,6 +112,7 @@ public class WishListService {
             var restaurnatEntity = restaurant.get();
             restaurnatEntity.setVisit(true);
             restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
+            wishListRepository.updateById(index, restaurnatEntity);
         }
     }
   
