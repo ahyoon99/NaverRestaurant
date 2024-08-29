@@ -12,5 +12,6 @@ CREATE TABLE RESTAURANT
     imageLink VARCHAR(255),     -- 음식, 가게 이미지 주소
     isVisit BOOLEAN NOT NULL,           -- 방문 여부
     visitCount INTEGER NOT NULL,         -- 방문 횟수
-    lastVisitDate TIMESTAMP    -- 마지막 방문 날짜
+    lastVisitDate TIMESTAMP,    -- 마지막 방문 날짜
+    starRating INTEGER          -- 별점
 );

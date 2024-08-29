@@ -46,4 +46,9 @@ public class ApiController {
     public void addVisit(@PathVariable int index){
         wishListService.addVisit(index);
     }
+
+    @PatchMapping("/{index}")
+    public void setStarRating(@PathVariable int index, @RequestParam int starRating){
+        wishListService.setStarRating(index, starRating);
+    }
 }
