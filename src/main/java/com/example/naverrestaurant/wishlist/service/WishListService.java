@@ -69,6 +69,7 @@ public class WishListService {
         entity.setVisit(wishListDto.isVisit());
         entity.setVisitCount(wishListDto.getVisitCount());
         entity.setLastVisitDate(wishListDto.getLastVisitDate());
+        entity.setStarRating(wishListDto.getStarRating());
         return entity;
     }
 
@@ -84,6 +85,7 @@ public class WishListService {
         dto.setVisit(wishListEntity.isVisit());
         dto.setVisitCount(wishListEntity.getVisitCount());
         dto.setLastVisitDate(wishListEntity.getLastVisitDate());
+        dto.setStarRating(wishListEntity.getStarRating());
         return dto;
     }
 
@@ -113,6 +115,18 @@ public class WishListService {
             restaurnatEntity.setVisit(true);
             restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
             wishListRepository.updateById(index, restaurnatEntity);
+        }
+    }
+
+    public void setStarRating(int index, int starRating){
+        var restaurant = wishListRepository.findById(index);
+        if(restaurant.isPresent()){
+            var restaurantEntity = restaurant.get();
+            restaurantEntity.setStarRating(starRating);
+            wishListRepository.updateStarRatingById(index, starRating);
+
+            var result = wishListRepository.findById(index);
+            System.out.println(result.toString());
         }
     }
   

@@ -34,14 +34,14 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
     @Override
     public T save(T entity) {
         String saveQuery = "insert into " +
-                "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate) " +
-                "values (?,?,?,?,?,?,?,?,?)";
+                "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate, starRating) " +
+                "values (?,?,?,?,?,?,?,?,?,?)";
         WishListEntity wishListEntity = (WishListEntity) entity;
 
         Object []saveParams = new Object[] {wishListEntity.getTitle(),
                 wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
                 wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
-                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate() };
+                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating()};
 
         jdbcTemplate.update(saveQuery, saveParams);
 
@@ -76,6 +76,11 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
         jdbcTemplate.update(updateByIdQuery, wishListEntity.isVisit(), wishListEntity.getVisitCount(), index);
     }
 
+    public void updateStarRatingById(int index, int starRating){
+        String updateStarRatingByIdQuery = "update restaurant set starRating = ? where index = ?";
+        jdbcTemplate.update(updateStarRatingByIdQuery, starRating, index);
+    }
+
     private RowMapper<WishListEntity> wishListEntityRowMapper(){
         return ((rs, rowNum) -> {
             WishListEntity wishListEntity = new WishListEntity();
@@ -91,6 +96,7 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
             if(rs.getTimestamp("lastVisitDate") != null){   // lastVisitDate가 null이 아닐 때만 set 해주기
                 wishListEntity.setLastVisitDate(rs.getTimestamp("lastVisitDate").toLocalDateTime());
             }
+            wishListEntity.setStarRating((rs.getInt("starRating")));
             return wishListEntity;
         });
     }
