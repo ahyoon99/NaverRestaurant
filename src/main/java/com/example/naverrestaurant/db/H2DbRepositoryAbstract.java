@@ -33,24 +33,32 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public T save(T entity) {
-        String saveQuery = "insert into " +
-                "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate, starRating) " +
-                "values (?,?,?,?,?,?,?,?,?,?)";
-        WishListEntity wishListEntity = (WishListEntity) entity;
+        if(entity.getIndex() == null){
+            String saveQuery = "insert into " +
+                    "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate, starRating) " +
+                    "values (?,?,?,?,?,?,?,?,?,?)";
 
-        Object []saveParams = new Object[] {wishListEntity.getTitle(),
-                wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
-                wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
-                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating()};
+            WishListEntity wishListEntity = (WishListEntity) entity;
+            Object []saveParams = new Object[] {wishListEntity.getTitle(),
+                    wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
+                    wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
+                    wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating()};
 
-        jdbcTemplate.update(saveQuery, saveParams);
+            jdbcTemplate.update(saveQuery, saveParams);
 
-        String lastInsertIndexQuery = "select max(index) from restaurant";
-        int listInsertIndex = jdbcTemplate.queryForObject(lastInsertIndexQuery, int.class);
+            String lastInsertIndexQuery = "select max(index) from restaurant";
+            int listInsertIndex = jdbcTemplate.queryForObject(lastInsertIndexQuery, int.class);
 
-        String lastInsertEntityQuery = "select * from restaurant where index=?";
-        WishListEntity result = jdbcTemplate.queryForObject(lastInsertEntityQuery, wishListEntityRowMapper(), listInsertIndex);
-        return (T) result;
+            String lastInsertEntityQuery = "select * from restaurant where index=?";
+            WishListEntity result = jdbcTemplate.queryForObject(lastInsertEntityQuery, wishListEntityRowMapper(), listInsertIndex);
+            return (T) result;
+        }
+        else{
+            updateById(entity.getIndex(), entity);
+            String updateEntityQuery = "select * from restaurant where index=?";
+            WishListEntity result = jdbcTemplate.queryForObject(updateEntityQuery, wishListEntityRowMapper(), entity.getIndex());
+            return (T) result;
+        }
     }
 
     @Override
