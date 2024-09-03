@@ -18,7 +18,7 @@ public class ApiController {
 
     @GetMapping("/findById")
     public WishListDto findById(@RequestParam int index){
-        return wishListService.findById(index);
+        return wishListService.find(index);
     }
 
     @GetMapping("/search")

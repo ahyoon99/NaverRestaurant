@@ -100,7 +100,7 @@ public class WishListService {
         wishListRepository.deleteById(index);
     }
 
-    public WishListDto findById(int index) {
+    public WishListDto find(int index) {
         Optional<WishListEntity> wishListEntity = wishListRepository.findById(index);
         if(!wishListEntity.isPresent()){    // wishListEntity에 값이 없으면 Exception 처리하기
             throw new IllegalArgumentException();
