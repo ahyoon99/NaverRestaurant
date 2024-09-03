@@ -107,27 +107,23 @@ public class WishListService {
         }
         return entityToDto(wishListEntity.get());   // wishListEntity에 값이 있으면 wishListDto로 변환하여 리턴하기
     }
-  
-    public void addVisit(int index) {
+
+    public void addVisit(int index, int starRating) {
         var restaurant = wishListRepository.findById(index);
         if (restaurant.isPresent()){
-            var restaurnatEntity = restaurant.get();
-            restaurnatEntity.setVisit(true);
-            restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
-            wishListRepository.updateById(index, restaurnatEntity);
-        }
-    }
-
-    public void setStarRating(int index, int starRating){
-        var restaurant = wishListRepository.findById(index);
-        if(restaurant.isPresent()){
             var restaurantEntity = restaurant.get();
+            if(!restaurantEntity.isVisit()){     // 방문한 적 없는 식당인 경우, isVisit을 true로 변경해주기
+                restaurantEntity.setVisit(true);
+            }
+            restaurantEntity.setVisitCount(restaurantEntity.getVisitCount()+1);
             restaurantEntity.setStarRating(starRating);
             wishListRepository.updateById(index, restaurantEntity);
 
             var result = wishListRepository.findById(index);
             System.out.println(result.toString());
         }
+        else{   // index에 해당하는 WishListEntity가 존재하지 않을 때
+
+        }
     }
-  
 }

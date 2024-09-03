@@ -70,7 +70,7 @@ public class WishListServiceTest {
 
         var saveEntity = wishListService.add(wishListDto);
 
-        wishListService.addVisit(1);
+        wishListService.addVisit(1, 3);
 
         List<WishListDto> wishList = wishListService.findAll();
 
