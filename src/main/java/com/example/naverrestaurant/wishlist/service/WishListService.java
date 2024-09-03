@@ -123,7 +123,7 @@ public class WishListService {
         if(restaurant.isPresent()){
             var restaurantEntity = restaurant.get();
             restaurantEntity.setStarRating(starRating);
-            wishListRepository.updateStarRatingById(index, starRating);
+            wishListRepository.updateById(index, restaurantEntity);
 
             var result = wishListRepository.findById(index);
             System.out.println(result.toString());

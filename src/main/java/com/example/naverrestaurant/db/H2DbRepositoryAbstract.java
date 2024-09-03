@@ -70,15 +70,17 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public void updateById(int index, T entity) {
-        String updateByIdQuery = "update restaurant set isvisit=?, visitcount=? where index=?";
+        String updateByIdQuery = "update restaurant " +
+                "set title=?, category=?, address=?, roadAddress=?, homepageLink=?, imageLink=?, isvisit=?, visitCount=?, lastVisitDate=?, starRating=? where index=?";
 
         WishListEntity wishListEntity = (WishListEntity) entity;
-        jdbcTemplate.update(updateByIdQuery, wishListEntity.isVisit(), wishListEntity.getVisitCount(), index);
-    }
+        Object []updateParams = new Object[] {wishListEntity.getTitle(),
+                wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
+                wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
+                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating(), index};
 
-    public void updateStarRatingById(int index, int starRating){
-        String updateStarRatingByIdQuery = "update restaurant set starRating = ? where index = ?";
-        jdbcTemplate.update(updateStarRatingByIdQuery, starRating, index);
+        jdbcTemplate.update(updateByIdQuery, updateParams);
+
     }
 
     private RowMapper<WishListEntity> wishListEntityRowMapper(){
