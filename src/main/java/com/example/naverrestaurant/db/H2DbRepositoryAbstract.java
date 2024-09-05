@@ -66,7 +66,12 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
         String deleteByIdQuery = "delete from restaurant where index=?";
         int deleteByIdParam = index;
         int result = this.jdbcTemplate.update(deleteByIdQuery, deleteByIdParam);
-        System.out.println("delete : "+result);
+        if(result==1){
+            System.out.println("delete success");
+        }
+        else if(result==0){
+            System.out.println("delete fail");
+        }
     }
 
     @Override
