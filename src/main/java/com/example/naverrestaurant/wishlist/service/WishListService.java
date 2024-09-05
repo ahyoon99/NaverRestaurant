@@ -9,6 +9,7 @@ import com.example.naverrestaurant.wishlist.repository.WishListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -117,6 +118,7 @@ public class WishListService {
             }
             restaurantEntity.setVisitCount(restaurantEntity.getVisitCount()+1);
             restaurantEntity.setStarRating(starRating);
+            restaurantEntity.setLastVisitDate(LocalDateTime.now());
             wishListRepository.updateById(index, restaurantEntity);
 
             var result = wishListRepository.findById(index);
