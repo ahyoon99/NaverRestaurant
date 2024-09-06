@@ -116,7 +116,14 @@ public class WishListService {
             if(!restaurantEntity.isVisit()){     // 방문한 적 없는 식당인 경우, isVisit을 true로 변경해주기
                 restaurantEntity.setVisit(true);
             }
-            restaurantEntity.setVisitCount(restaurantEntity.getVisitCount()+1);
+
+            // 평균 별점 계산해주기
+            int restaurantEntityVisitCount = restaurantEntity.getVisitCount();
+            double restaurantEntityStarRating = restaurantEntity.getStarRating();
+
+            starRating = (int) (restaurantEntityStarRating*restaurantEntityVisitCount+starRating)/(restaurantEntityVisitCount+1);
+
+            restaurantEntity.setVisitCount(restaurantEntityVisitCount+1);
             restaurantEntity.setStarRating(starRating);
             restaurantEntity.setLastVisitDate(LocalDateTime.now());
             wishListRepository.updateById(index, restaurantEntity);
