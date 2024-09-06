@@ -121,10 +121,10 @@ public class WishListService {
             int restaurantEntityVisitCount = restaurantEntity.getVisitCount();
             double restaurantEntityStarRating = restaurantEntity.getStarRating();
 
-            starRating = (int) (restaurantEntityStarRating*restaurantEntityVisitCount+starRating)/(restaurantEntityVisitCount+1);
+            restaurantEntityStarRating = (Math.round(((restaurantEntityStarRating*restaurantEntityVisitCount+starRating)/(restaurantEntityVisitCount+1))*100)/100.0);
 
             restaurantEntity.setVisitCount(restaurantEntityVisitCount+1);
-            restaurantEntity.setStarRating(starRating);
+            restaurantEntity.setStarRating(restaurantEntityStarRating);
             restaurantEntity.setLastVisitDate(LocalDateTime.now());
             wishListRepository.updateById(index, restaurantEntity);
 
