@@ -33,24 +33,32 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public T save(T entity) {
-        String saveQuery = "insert into " +
-                "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate, starRating) " +
-                "values (?,?,?,?,?,?,?,?,?,?)";
-        WishListEntity wishListEntity = (WishListEntity) entity;
+        if(entity.getIndex() == null){
+            String saveQuery = "insert into " +
+                    "restaurant(title, category, address, roadAddress, homepageLink, imageLink, isvisit, visitCount, lastVisitDate, starRating) " +
+                    "values (?,?,?,?,?,?,?,?,?,?)";
 
-        Object []saveParams = new Object[] {wishListEntity.getTitle(),
-                wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
-                wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
-                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating()};
+            WishListEntity wishListEntity = (WishListEntity) entity;
+            Object []saveParams = new Object[] {wishListEntity.getTitle(),
+                    wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
+                    wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
+                    wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating()};
 
-        jdbcTemplate.update(saveQuery, saveParams);
+            jdbcTemplate.update(saveQuery, saveParams);
 
-        String lastInsertIndexQuery = "select max(index) from restaurant";
-        int listInsertIndex = jdbcTemplate.queryForObject(lastInsertIndexQuery, int.class);
+            String lastInsertIndexQuery = "select max(index) from restaurant";
+            int listInsertIndex = jdbcTemplate.queryForObject(lastInsertIndexQuery, int.class);
 
-        String lastInsertEntityQuery = "select * from restaurant where index=?";
-        WishListEntity result = jdbcTemplate.queryForObject(lastInsertEntityQuery, wishListEntityRowMapper(), listInsertIndex);
-        return (T) result;
+            String lastInsertEntityQuery = "select * from restaurant where index=?";
+            WishListEntity result = jdbcTemplate.queryForObject(lastInsertEntityQuery, wishListEntityRowMapper(), listInsertIndex);
+            return (T) result;
+        }
+        else{
+            updateById(entity.getIndex(), entity);
+            String updateEntityQuery = "select * from restaurant where index=?";
+            WishListEntity result = jdbcTemplate.queryForObject(updateEntityQuery, wishListEntityRowMapper(), entity.getIndex());
+            return (T) result;
+        }
     }
 
     @Override
@@ -58,7 +66,12 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
         String deleteByIdQuery = "delete from restaurant where index=?";
         int deleteByIdParam = index;
         int result = this.jdbcTemplate.update(deleteByIdQuery, deleteByIdParam);
-        System.out.println("delete : "+result);
+        if(result==1){
+            System.out.println("delete success");
+        }
+        else if(result==0){
+            System.out.println("delete fail");
+        }
     }
 
     @Override
@@ -70,15 +83,17 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
 
     @Override
     public void updateById(int index, T entity) {
-        String updateByIdQuery = "update restaurant set isvisit=?, visitcount=? where index=?";
+        String updateByIdQuery = "update restaurant " +
+                "set title=?, category=?, address=?, roadAddress=?, homepageLink=?, imageLink=?, isvisit=?, visitCount=?, lastVisitDate=?, starRating=? where index=?";
 
         WishListEntity wishListEntity = (WishListEntity) entity;
-        jdbcTemplate.update(updateByIdQuery, wishListEntity.isVisit(), wishListEntity.getVisitCount(), index);
-    }
+        Object []updateParams = new Object[] {wishListEntity.getTitle(),
+                wishListEntity.getCategory(), wishListEntity.getAddress(), wishListEntity.getRoadAddress(),
+                wishListEntity.getHomePageLink(), wishListEntity.getImageLink(), wishListEntity.isVisit(),
+                wishListEntity.getVisitCount(), wishListEntity.getLastVisitDate(), wishListEntity.getStarRating(), index};
 
-    public void updateStarRatingById(int index, int starRating){
-        String updateStarRatingByIdQuery = "update restaurant set starRating = ? where index = ?";
-        jdbcTemplate.update(updateStarRatingByIdQuery, starRating, index);
+        jdbcTemplate.update(updateByIdQuery, updateParams);
+
     }
 
     private RowMapper<WishListEntity> wishListEntityRowMapper(){
@@ -96,7 +111,7 @@ abstract public class H2DbRepositoryAbstract<T extends MemoryDbEntity> implement
             if(rs.getTimestamp("lastVisitDate") != null){   // lastVisitDate가 null이 아닐 때만 set 해주기
                 wishListEntity.setLastVisitDate(rs.getTimestamp("lastVisitDate").toLocalDateTime());
             }
-            wishListEntity.setStarRating((rs.getInt("starRating")));
+            wishListEntity.setStarRating((rs.getDouble("starRating")));
             return wishListEntity;
         });
     }

@@ -9,6 +9,7 @@ import com.example.naverrestaurant.wishlist.repository.WishListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -100,34 +101,38 @@ public class WishListService {
         wishListRepository.deleteById(index);
     }
 
-    public WishListDto findById(int index) {
+    public WishListDto find(int index) {
         Optional<WishListEntity> wishListEntity = wishListRepository.findById(index);
         if(!wishListEntity.isPresent()){    // wishListEntity에 값이 없으면 Exception 처리하기
             throw new IllegalArgumentException();
         }
         return entityToDto(wishListEntity.get());   // wishListEntity에 값이 있으면 wishListDto로 변환하여 리턴하기
     }
-  
-    public void addVisit(int index) {
+
+    public void addVisit(int index, int starRating) {
         var restaurant = wishListRepository.findById(index);
         if (restaurant.isPresent()){
-            var restaurnatEntity = restaurant.get();
-            restaurnatEntity.setVisit(true);
-            restaurnatEntity.setVisitCount(restaurnatEntity.getVisitCount()+1);
-            wishListRepository.updateById(index, restaurnatEntity);
-        }
-    }
-
-    public void setStarRating(int index, int starRating){
-        var restaurant = wishListRepository.findById(index);
-        if(restaurant.isPresent()){
             var restaurantEntity = restaurant.get();
-            restaurantEntity.setStarRating(starRating);
-            wishListRepository.updateStarRatingById(index, starRating);
+            if(!restaurantEntity.isVisit()){     // 방문한 적 없는 식당인 경우, isVisit을 true로 변경해주기
+                restaurantEntity.setVisit(true);
+            }
+
+            // 평균 별점 계산해주기
+            int restaurantEntityVisitCount = restaurantEntity.getVisitCount();
+            double restaurantEntityStarRating = restaurantEntity.getStarRating();
+
+            restaurantEntityStarRating = (Math.round(((restaurantEntityStarRating*restaurantEntityVisitCount+starRating)/(restaurantEntityVisitCount+1))*100)/100.0);
+
+            restaurantEntity.setVisitCount(restaurantEntityVisitCount+1);
+            restaurantEntity.setStarRating(restaurantEntityStarRating);
+            restaurantEntity.setLastVisitDate(LocalDateTime.now());
+            wishListRepository.updateById(index, restaurantEntity);
 
             var result = wishListRepository.findById(index);
             System.out.println(result.toString());
         }
+        else{   // index에 해당하는 WishListEntity가 존재하지 않을 때
+
+        }
     }
-  
 }

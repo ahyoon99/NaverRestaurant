@@ -13,5 +13,5 @@ CREATE TABLE RESTAURANT
     isVisit BOOLEAN NOT NULL,           -- 방문 여부
     visitCount INTEGER NOT NULL,         -- 방문 횟수
     lastVisitDate TIMESTAMP,    -- 마지막 방문 날짜
-    starRating INTEGER          -- 별점
+    starRating DOUBLE          -- 별점
 );

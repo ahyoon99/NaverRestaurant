@@ -20,5 +20,5 @@ public class WishListDto {
     private boolean isVisit;    // 방문 여부
     private int visitCount; // 방문 횟수
     private LocalDateTime lastVisitDate;    // 마지막 방문 날짜
-    private int starRating;     // 별점
+    private double starRating;     // 별점
 }
